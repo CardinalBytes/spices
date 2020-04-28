@@ -5,14 +5,14 @@
 
 #ifndef SPICES_VEC
 #define SPICES_VEC
-enum spice_vec_flags {
+enum spice_vec_tags {
     auto_alloc = 1u,
     n_alloc = 2u,
     cpy_ref = 4u,
     default_mode = auto_alloc | cpy_ref,
 };
 typedef struct spices_vec__ spc_vec_t;
-typedef enum spice_vec_flags spc_vtags_t;
+typedef enum spice_vec_tags spc_vtags_t;
 #endif
 
 /**
@@ -26,8 +26,10 @@ spc_vec_t *spc_veci (uint64_t init_size, uint64_t itm_size, spc_vtags_t tags);
 
 void spc_free_vec (spc_vec_t *vec);
 
-//void spc_clear_vec (spc_vec_t *vec);
+void spc_clear_vec (spc_vec_t *vec);
 
 int spc_vec_put_ord (spc_vec_t *vec, void *item_ptr);
+
+void *spc_vec_get_ref_at (spc_vec_t *vec, uint64_t index);
 
 #endif //SPICES_LIBRARY_H

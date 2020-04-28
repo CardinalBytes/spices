@@ -26,12 +26,15 @@ spc_vec_t *spc_veci (uint64_t init_size, uint64_t itm_size, spc_vtags_t tags)
 {
 	spc_vec_t *vec = 0;
 	char *data = 0;
+	uint64_t data_size;
 
 	vec = malloc (sizeof (spc_vec_t));
 	if (!vec)
 		goto spc_vec_alloc_fault;
 
-	data = (char *)malloc (itm_size * init_size);
+	data_size = init_size * itm_size;
+
+	data = (char *)malloc (data_size);
 	if (!data)
 		goto spc_vec_alloc_fault;
 
@@ -45,6 +48,7 @@ spc_vec_t *spc_veci (uint64_t init_size, uint64_t itm_size, spc_vtags_t tags)
 	vec->top_ptr = data;
 	vec->data = data;
 
+	return vec;
     spc_vec_alloc_fault:
 	free (vec);
 	free (data);
@@ -55,6 +59,24 @@ void spc_free_vec (spc_vec_t *vec)
 {
 	free ((void *)vec->data);
 	free ((void *)vec);
+}
+
+void spc_clear_vec (spc_vec_t *vec)
+{
+	uint64_t i;
+	uint64_t j;
+	void *ref_at;
+	char *ref_byte;
+
+	for (i = 0; i < vec->used; i++) {
+		ref_at = spc_vec_get_ref_at(vec, i);
+		for (j = 0; j < vec->item_size; j++) {
+			ref_byte = ref_at + j;
+			*ref_byte = 0b00000000;
+		}
+	}
+
+	spc_free_vec(vec);
 }
 
 int spc_vec_put_ord (spc_vec_t *vec, void *item_ptr)
@@ -71,6 +93,20 @@ int spc_vec_put_ord (spc_vec_t *vec, void *item_ptr)
 
 	vec->top_ptr = itm_addr + vec->item_size;
 	return 0;
+}
+
+void *spc_vec_get_ref_at (spc_vec_t *vec, uint64_t index)
+{
+	uint64_t offset;
+	void *offset_ptr;
+
+	if (index > vec->used - 1)
+		return 0;
+
+	offset = index != 0 ? index * vec->item_size:0;
+	offset_ptr = (void *)vec->data + offset;
+
+	return offset_ptr;
 }
 
 
