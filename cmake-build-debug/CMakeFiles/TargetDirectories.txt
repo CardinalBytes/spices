@@ -1,0 +1,3 @@
+/home/mxavier/CLionProjects/spices/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/mxavier/CLionProjects/spices/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mxavier/CLionProjects/spices/cmake-build-debug/CMakeFiles/spices.dir
