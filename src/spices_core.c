@@ -61,6 +61,7 @@ void spc_vec_free(spc_vec_t *vec)
 {
 	free((void *)vec->data);
 	free((void *)vec);
+	vec = NULL;
 }
 
 void spc_vec_clear(spc_vec_t *vec)
