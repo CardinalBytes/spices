@@ -1,32 +1,33 @@
 #include "../include/spices_core.h"
 
 #include "spices_core_memdefs.h"
+#include "typedefs.h"
 #include <stdlib.h>
 #include <string.h>
 
-int vec_exp_by(spc_vec_t *vec, uint64_t multiplier)
+int vec_rsz_by(spc_vec_t *vec, double multipl)
 {
-	uint64_t reloc_size;
+	u64 reloc_size;
 
 	if ((vec->tags & n_alloc) != 0)
 		return -1;
 
-	reloc_size = (vec->cap * multiplier) * vec->item_size;
+	reloc_size = (vec->cap * multipl) * vec->item_size;
 	vec->data = (char *)realloc((void *)vec->data, reloc_size);
 	if (!vec->data)
 		return -1;
 
-	vec->cap = vec->cap * multiplier;
+	vec->cap = vec->cap * multipl;
 	/* update the pointer to the vector topmost item */
 	vec->top_ptr = vec->data + (vec->used * vec->item_size);
 	return 0;
 }
 
-spc_vec_t *spc_veci(uint64_t init_size, uint64_t itm_size, spc_vtags_t tags)
+spc_vec_t *spc_veci(u64 init_size, u64 itm_size, spc_vtags_t tags)
 {
 	spc_vec_t *vec = 0;
 	char *data = 0;
-	uint64_t data_size;
+	u64 data_size;
 
 	vec = malloc(sizeof(spc_vec_t));
 	if (!vec)
@@ -73,7 +74,7 @@ int spc_vec_put_ord(spc_vec_t *vec, void *item_ptr)
 	char *itm_addr;
 
 	if (vec->used >= vec->cap)
-		vec_exp_by(vec, 2);
+		vec_rsz_by(vec, 2.0f);
 
 	vec->used++;
 	itm_addr = memcpy((void *)vec->top_ptr, item_ptr, vec->item_size);
@@ -84,9 +85,9 @@ int spc_vec_put_ord(spc_vec_t *vec, void *item_ptr)
 	return 0;
 }
 
-void *spc_vec_greft(spc_vec_t *vec, uint64_t index)
+void *spc_vec_greft(spc_vec_t *vec, u64 index)
 {
-	uint64_t offset;
+	u64 offset;
 	void *offset_ptr;
 
 	if (index > vec->used - 1)
@@ -101,6 +102,9 @@ void *spc_vec_greft(spc_vec_t *vec, uint64_t index)
 void *spc_vec_popref(spc_vec_t *vec)
 {
 	void *ref;
+
+	if (vec->used <= (vec->cap / 2) && (vec->tags & 8) == 0)
+		vec_rsz_by(vec, 0.5f);
 
 	if (vec->top_ptr == vec->data + vec->item_size && vec->used > 0) {
 		ref = vec->data;
@@ -117,12 +121,12 @@ void *spc_vec_popref(spc_vec_t *vec)
 	return ref;
 }
 
-uint64_t spc_vec_len(spc_vec_t *vec)
+u64 spc_vec_len(spc_vec_t *vec)
 {
 	return vec->used;
 }
 
-uint64_t spc_vec_sizeof(spc_vec_t *vec)
+u64 spc_vec_sizeof(spc_vec_t *vec)
 {
 	return vec->cap;
 }
