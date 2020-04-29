@@ -9,10 +9,10 @@ int main(void)
 	int i;
 	double *at_pos;
 
-	vec = spc_veci(100, sizeof(double), 0);
-	printf("len: %d, sizeof: %d", spc_vec_len(vec), spc_vec_sizeof(vec));
+	vec = spc_veci(3, sizeof(double), 0);
 
 	for (i = 0; i < 10; i++) {
+		printf("len: %lu, sizeof: %lu\n", spc_vec_len(vec), spc_vec_sizeof(vec));
 		val = 0.00 + (double)i;
 		spc_vec_put_ord(vec, &val);
 	}
@@ -20,7 +20,7 @@ int main(void)
 	for (i = 0; i < 15; i++) {
 		at_pos = spc_vec_popref(vec);
 		if (at_pos) {
-			printf("len: %d, sizeof: %d\n", spc_vec_len(vec), spc_vec_sizeof(vec));
+			printf("len: %lu, sizeof: %lu\n", spc_vec_len(vec), spc_vec_sizeof(vec));
 			fprintf(stdout, "%d %.2f\n", i, *at_pos);
 		}
 	}
