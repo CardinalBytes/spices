@@ -8,4 +8,4 @@ add_library(spicesa src/spices_core.c include/spices_core.h src/spices_core_memd
 
 add_executable(vec_tests tests/vector_test.c)
 add_dependencies(vec_tests spices)
-target_link_libraries(vec_tests ${CMAKE_SOURCE_DIR}/cmake-build-debug/libcspicesutl.so)
+target_link_libraries(vec_tests ${CMAKE_SOURCE_DIR}/cmake-build-debug/libspices.so)
